@@ -1,0 +1,123 @@
+:root {
+  --step: 0.2s;
+  --open-deg: 130deg;
+  --slide: 55%;
+  --bg: #00f899;
+  --stroke: #262626;
+}
+*,
+*:after,
+*:before {
+  box-sizing: border-box;
+}
+body {
+  display: grid;
+  place-items: center;
+  min-height: 100vh;
+  background: var(--bg);
+}
+span {
+  font-family: sans-serif;
+  font-size: 10vmin;
+  font-weight: 500;
+}
+@property --think-y-out {
+  inherits: true;
+  syntax: '<percentage>';
+  initial-value: 0%;
+}
+@property --think-y-down {
+  inherits: true;
+  syntax: '<percentage>';
+  initial-value: 0%;
+}
+@property --think-x {
+  inherits: true;
+  syntax: '<percentage>';
+  initial-value: 0%;
+}
+@property --box-open {
+  inherits: true;
+  syntax: '<angle>';
+  initial-value: 0deg;
+}
+@property --box-close {
+  inherits: true;
+  syntax: '<angle>';
+  initial-value: 0deg;
+}
+@property --box-x {
+  inherits: true;
+  syntax: '<percentage>';
+  initial-value: 0%;
+}
+label {
+  height: 100vh;
+  width: 100vw;
+  position: fixed;
+  z-index: 2;
+  display: block;
+}
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+:checked ~ .box {
+  --box-open: calc(var(--open-deg) * -1);
+  --box-close: calc(var(--open-deg) * 1);
+  --box-x: calc(var(--slide) * -1);
+  --think-x: calc(var(--slide) * 2);
+  --think-y-out: -100%;
+  --think-y-down: 100%;
+  --open-index: 0;
+  --close-index: 4;
+  --slide-index: 2;
+  --up-index: 1;
+  --down-index: 3;
+}
+.box {
+  --open-index: 4;
+  --close-index: 0;
+  --slide-index: 2;
+  --up-index: 3;
+  --down-index: 1;
+  aspect-ratio: 1/1;
+  display: grid;
+  place-items: center;
+  position: relative;
+  transform: translate(var(--box-x), 0);
+  transition: --box-open var(--step) calc(var(--step) * var(--open-index)), --box-x var(--step) calc(var(--step) * var(--slide-index)), --box-close var(--step) calc(var(--step) * var(--close-index));
+}
+.box:after,
+.box:before {
+  --clip: inset(1.1vmin 0 0 0);
+  content: '';
+  box-shadow: 0 0 0 1vmin var(--stroke) inset;
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  -webkit-clip-path: var(--clip, inset(1vmin 0 0 0));
+  clip-path: var(--clip, inset(1vmin 0 0 0));
+}
+.box:before {
+  --clip: inset(0 0 calc(100% - 1.1vmin) 0);
+  transform-origin: 0.5vmin 0.5vmin;
+  transform: rotate(var(--box-open)) rotate(var(--box-close));
+}
+span {
+  display: grid;
+  place-items: center;
+  height: 100%;
+  width: 100%;
+  padding: 2vmin;
+  color: var(--stroke);
+  transition: --think-y-out var(--step) calc(var(--step) * var(--up-index)), --think-x var(--step) calc(var(--step) * var(--slide-index)), --think-y-down var(--step) calc(var(--step) * var(--down-index));
+  transform: translate(var(--think-x), var(--think-y-out)) translate(0, var(--think-y-down));
+}
